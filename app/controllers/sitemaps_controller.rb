@@ -1,15 +1,12 @@
 class SitemapsController < Spree::BaseController
   def index
     respond_to do |format|
-      format.html do
-        @nav = _add_products_to_tax(_build_taxon_hash, 1)
+      format.html { @nav = _add_products_to_tax(_build_taxon_hash, 1) }
+      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, 0)) }
+      format.text do
+        @nav = _add_products_to_tax(_build_taxon_hash, 0)
+        render :layout => false
       end
-      format.xml do
-        render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, 0))
-      end
-      #format.txt do
-      #  render :layout => false, :nav => _build_txt(_add_products_to_tax(_build_taxon_hash, 0))
-      #end
     end
   end
 
@@ -45,15 +42,20 @@ class SitemapsController < Spree::BaseController
   end
 
   def _add_products_to_tax(nav, multiples_allowed)
+    #TODO: Force active products only?
     Product.find(:all).each do |product|
-      product.taxons.each do |taxon|
-        pinfo = Hash.new
-        pinfo['name'] = product.name
-        pinfo['depth'] = taxon.permalink.split('/').size + 1
-	pinfo['link'] = 'products/' + product.permalink
-        pinfo['updated'] = product.updated_at
-	key = multiples_allowed ? taxon.permalink + 'p/' + product.permalink : product.permalink
-        nav[taxon.permalink + 'p/' + product.permalink] = pinfo
+      pinfo = Hash.new
+      pinfo['name'] = product.name
+      pinfo['link'] = '/products/' + product.permalink
+      pinfo['updated'] = product.updated_at
+      if multiples_allowed.nil?
+        nav[p['link']] = pinfo
+      else
+        product.taxons.each do |taxon|
+          pinfo['depth'] = taxon.permalink.split('/').size + 1
+	  key = multiples_allowed ? taxon.permalink + 'p/' + product.permalink : product.permalink
+          nav[taxon.permalink + 'p/' + product.permalink] = pinfo
+        end
       end
     end
     nav

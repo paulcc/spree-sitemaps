@@ -1,3 +1,3 @@
 = Spree Sitemaps
 
-Description goes here
+Sitemap management for spree.
