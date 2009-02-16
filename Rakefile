@@ -99,7 +99,7 @@ namespace :spec do
   end
 end
 
-desc 'Generate documentation for the spree_sitemaps extension.'
+desc 'Generate documentation for the sitemaps extension.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'SpreeSitemapsExtension'
@@ -109,7 +109,7 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
 end
 
 # For extensions that are in transition
-desc 'Test the spree_sitemaps extension.'
+desc 'Test the sitemaps extension.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.pattern = 'test/**/*_test.rb'
