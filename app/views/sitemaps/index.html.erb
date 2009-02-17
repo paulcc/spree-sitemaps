@@ -1,8 +1,7 @@
 <h1>Sitemap</h1>
-Static Pages<br />
-Navigation Pages<br />
-<% @nav.sort.each do |k,v| %>
-<% v['depth'].times do %>&nbsp;&nbsp;<% end %>
-<a href="<%= v['link'] %>"><%= v['name'] %></a><br />
-<% end %>
+<%= link_to 'Homepage', @public_dir %><br />
+<% @nav.sort.each do |k,v| -%>
+<% v['depth'].times do -%>&nbsp;&nbsp;<% end -%>
+<%= link_to v['name'], @public_dir + v['link'] %><br />
+<% end -%>
 <br />

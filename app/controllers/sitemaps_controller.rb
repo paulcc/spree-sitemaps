@@ -1,8 +1,9 @@
 class SitemapsController < Spree::BaseController
   def index
+    @public_dir = url_for ( :controller => '/' )
     respond_to do |format|
       format.html { @nav = _add_products_to_tax(_build_taxon_hash, 1) }
-      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, 0)) }
+      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, 0), @public_dir) }
       format.text do
         @nav = _add_products_to_tax(_build_taxon_hash, 0)
         render :layout => false
@@ -11,14 +12,14 @@ class SitemapsController < Spree::BaseController
   end
 
   private
-  def _build_xml(nav)
+  def _build_xml(nav, public_dir)
     returning '' do |output|
       xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
       xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-9"
       xml.urlset( :xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" ) {
         nav.each do |k, v| 
           xml.url {
-            xml.loc Rails.root + v['link']
+            xml.loc public_dir + v['link']
             xml.lastmod v['updated']  #change timestamp of last modified
             xml.changefreq 'weekly'
             xml.priority '0.8'
@@ -34,7 +35,7 @@ class SitemapsController < Spree::BaseController
       tinfo = Hash.new
       tinfo['name'] = taxon.name
       tinfo['depth'] = taxon.permalink.split('/').size
-      tinfo['link'] = '/t/' + taxon.permalink 
+      tinfo['link'] = 't/' + taxon.permalink 
       tinfo['updated'] = taxon.updated_at
       nav[taxon.permalink] = tinfo
     end
@@ -42,11 +43,10 @@ class SitemapsController < Spree::BaseController
   end
 
   def _add_products_to_tax(nav, multiples_allowed)
-    #TODO: Force active products only?
-    Product.find(:all).each do |product|
+    Product.active.find(:all).each do |product|
       pinfo = Hash.new
       pinfo['name'] = product.name
-      pinfo['link'] = '/products/' + product.permalink
+      pinfo['link'] = 'products/' + product.permalink
       pinfo['updated'] = product.updated_at
       if multiples_allowed.nil?
         nav[p['link']] = pinfo

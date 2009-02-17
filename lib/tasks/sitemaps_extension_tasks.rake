@@ -23,6 +23,14 @@ namespace :spree do
           cp file, RAILS_ROOT + path
         end
       end  
+      task :google_sync => :environment do
+	#url = http://www.google.com/webmasters/tools/ping?sitemap=url_encode(public_dir + /sitemaps.xml)
+	#wget url 
+      end
+      task :yahoo_sync => :environment do
+        #url = http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=url_encode(public+dir + /sitemaps.txt)
+        #wget url
+      end
     end
   end
 end
