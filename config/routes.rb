@@ -1,1 +1,1 @@
-map.resources :sitemaps
+map.resources :sitemap

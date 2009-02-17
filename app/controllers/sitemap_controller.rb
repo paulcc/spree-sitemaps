@@ -1,4 +1,4 @@
-class SitemapsController < Spree::BaseController
+class SitemapController < Spree::BaseController
   def index
     @public_dir = url_for ( :controller => '/' )
     respond_to do |format|

@@ -1,0 +1,7 @@
+<h1>Sitemap</h1>
+<%= link_to 'Homepage', @public_dir %><br />
+<% @nav.sort.each do |k,v| -%>
+<% v['depth'].times do -%>&nbsp;&nbsp;<% end -%>
+<%= link_to v['name'], @public_dir + v['link'] %><br />
+<% end -%>
+<br />
