@@ -3,16 +3,9 @@
 
 class SitemapsExtension < Spree::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/sitemaps"
+  description "Sitemaps for Spree (html, xml, txt). Link added to footer partial."
+  url "http://spreehq.org/"
 
-  # Please use sitemaps/config/routes.rb instead for extension routes.
-
-  # def self.require_gems(config)
-  #   config.gem "gemname-goes-here", :version => '1.2.3'
-  # end
-  
   def activate
-    # admin.tabs.add "Spree Sitemaps", "/admin/sitemaps", :after => "Layouts", :visibility => [:all]
   end
 end
