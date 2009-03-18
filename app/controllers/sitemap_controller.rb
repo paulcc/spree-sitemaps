@@ -17,6 +17,12 @@ class SitemapController < Spree::BaseController
       xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
       xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-9"
       xml.urlset( :xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" ) {
+        xml.url {
+          xml.loc public_dir
+          xml.lastmod Date.today
+          xml.changefreq 'daily'
+          xml.priority '1.0'
+        }
         nav.each do |k, v| 
           xml.url {
             xml.loc public_dir + v['link']
