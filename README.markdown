@@ -10,4 +10,6 @@ INSTALLATION
 
       git clone git://github.com/stephp/spree-sitemaps.git sitemaps
 
-2. Sitemap is accessible at public_domain/sitemap.html, public_domain/sitemap.xml, and public_domain/sitemap.txt
+2. Add link to sitemap to shared element on frontend. For example, I have add '<p><%= link_to 'Sitemap', '/sitemap.html' %></p>' to shared/_footer.html.erb.
+
+3. Sitemap is accessible at public_domain/sitemap.html, public_domain/sitemap.xml, and public_domain/sitemap.txt
