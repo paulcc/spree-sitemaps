@@ -2,10 +2,10 @@ class SitemapController < Spree::BaseController
   def index
     @public_dir = url_for ( :controller => '/' )
     respond_to do |format|
-      format.html { @nav = _add_products_to_tax(_build_taxon_hash, 1) }
-      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, 0), @public_dir) }
+      format.html { @nav = _add_products_to_tax(_build_taxon_hash, true) }
+      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, true), @public_dir) }
       format.text do
-        @nav = _add_products_to_tax(_build_taxon_hash, 0)
+        @nav = _add_products_to_tax(_build_taxon_hash, true)
         render :layout => false
       end
     end
@@ -15,7 +15,7 @@ class SitemapController < Spree::BaseController
   def _build_xml(nav, public_dir)
     returning '' do |output|
       xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
-      xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-9"
+      xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-8"
       xml.urlset( :xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" ) {
         xml.url {
           xml.loc public_dir
@@ -26,7 +26,7 @@ class SitemapController < Spree::BaseController
         nav.each do |k, v| 
           xml.url {
             xml.loc public_dir + v['link']
-            xml.lastmod v['updated']  #change timestamp of last modified
+            xml.lastmod v['updated'].xmlschema			  #change timestamp of last modified
             xml.changefreq 'weekly'
             xml.priority '0.8'
           } 
@@ -52,16 +52,19 @@ class SitemapController < Spree::BaseController
     Product.active.find(:all).each do |product|
       pinfo = Hash.new
       pinfo['name'] = product.name
-      pinfo['link'] = 'products/' + product.permalink
+      pinfo['link'] = 'products/' + product.permalink	# primary
       pinfo['updated'] = product.updated_at
-      if multiples_allowed.nil?
-        nav[p['link']] = pinfo
-      else
+
+      nav[pinfo['link']] = pinfo				# store primary
+      if multiples_allowed
         product.taxons.each do |taxon|
           pinfo['depth'] = taxon.permalink.split('/').size + 1
-	  key = multiples_allowed ? taxon.permalink + 'p/' + product.permalink : product.permalink
-          nav[taxon.permalink + 'p/' + product.permalink] = pinfo
+          taxon_link = taxon.permalink + 'p/' + product.permalink
+          new_pinfo = pinfo.clone
+          new_pinfo['link'] = taxon_link
+          nav[taxon_link] = new_pinfo
         end
+      else
       end
     end
     nav
