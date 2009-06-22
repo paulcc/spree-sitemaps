@@ -59,7 +59,7 @@ class SitemapController < Spree::BaseController
       if multiples_allowed
         product.taxons.each do |taxon|
           pinfo['depth'] = taxon.permalink.split('/').size + 1
-          taxon_link = taxon.permalink + 'p/' + product.permalink
+          taxon_link = 't/' + taxon.permalink + 'p/' + product.permalink
           new_pinfo = pinfo.clone
           new_pinfo['link'] = taxon_link
           nav[taxon_link] = new_pinfo
