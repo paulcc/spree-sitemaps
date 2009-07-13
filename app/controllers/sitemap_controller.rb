@@ -1,72 +1,33 @@
 class SitemapController < Spree::BaseController
   def index
-    @public_dir = url_for ( :controller => '/' )
+    @public_dir = url_for( :controller => '/' ).sub(%r|/\s*$|, '')
+    @info = build_tree(true)
     respond_to do |format|
-      format.html { @nav = _add_products_to_tax(_build_taxon_hash, true) }
-      format.xml { render :layout => false, :xml => _build_xml(_add_products_to_tax(_build_taxon_hash, true), @public_dir) }
-      format.text do
-        @nav = _add_products_to_tax(_build_taxon_hash, true)
-        render :layout => false
-      end
+      format.html { @info = build_tree(true) }
+      format.xml  { render :layout => false, :template => 'sitemap/index.xml.erb' }
+      format.text { render :text => @info.to_yaml }
     end
   end
 
   private
-  def _build_xml(nav, public_dir)
-    returning '' do |output|
-      xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
-      xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-8"
-      xml.urlset( :xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" ) {
-        xml.url {
-          xml.loc public_dir
-          xml.lastmod Date.today
-          xml.changefreq 'daily'
-          xml.priority '1.0'
-        }
-        nav.each do |k, v| 
-          xml.url {
-            xml.loc public_dir + v['link']
-            xml.lastmod v['updated'].xmlschema			  #change timestamp of last modified
-            xml.changefreq 'weekly'
-            xml.priority '0.8'
-          } 
-        end
-      }
+
+  # build a hash of results from all of the taxonomies
+  # can't use Hash[...flatten] technique here - it flattens everything
+  def build_tree(allow_duplicates = true)
+    table = {}
+    Taxonomy.all.each do |taxonomy|  
+      table[taxonomy.root] = visit(taxonomy.root,allow_duplicates) 
     end
+    table
+  end 
+
+  # include a product ONLY in its first taxon if allow_duplicates is false
+  # this is much easier than trying to track a visited-set
+  def visit(taxon, allow_duplicates)
+    # return [ [], {} ] if taxon.nil?
+    table = {} 
+    taxon.children.each {|taxon| table[taxon] = visit(taxon, allow_duplicates) }
+    [ taxon.products.select {|p| allow_duplicates || p.taxons.first == taxon }, table ]
   end
 
-  def _build_taxon_hash
-    nav = Hash.new
-    Taxon.find(:all).each do |taxon|
-      tinfo = Hash.new
-      tinfo['name'] = taxon.name
-      tinfo['depth'] = taxon.permalink.split('/').size
-      tinfo['link'] = 't/' + taxon.permalink 
-      tinfo['updated'] = taxon.updated_at
-      nav[taxon.permalink] = tinfo
-    end
-    nav
-  end
-
-  def _add_products_to_tax(nav, multiples_allowed)
-    Product.active.find(:all).each do |product|
-      pinfo = Hash.new
-      pinfo['name'] = product.name
-      pinfo['link'] = 'products/' + product.permalink	# primary
-      pinfo['updated'] = product.updated_at
-
-      nav[pinfo['link']] = pinfo				# store primary
-      if multiples_allowed
-        product.taxons.each do |taxon|
-          pinfo['depth'] = taxon.permalink.split('/').size + 1
-          taxon_link = 't/' + taxon.permalink + 'p/' + product.permalink
-          new_pinfo = pinfo.clone
-          new_pinfo['link'] = taxon_link
-          nav[taxon_link] = new_pinfo
-        end
-      else
-      end
-    end
-    nav
-  end
 end

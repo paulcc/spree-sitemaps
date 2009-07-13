@@ -1,7 +1,8 @@
 <h1>Sitemap</h1>
-<%= link_to 'Homepage', @public_dir %><br />
-<% @nav.sort.each do |k,v| -%>
-<% v['depth'].times do -%>&nbsp;&nbsp;<% end -%>
-<%= link_to v['name'], @public_dir + v['link'] %><br />
-<% end -%>
 <br />
+<br />
+<%= returning '' do |output|
+      xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
+      @info.each {|r,i| sub_html(xml, r, i) }
+    end
+%>
