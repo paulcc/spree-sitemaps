@@ -26,7 +26,7 @@ class SitemapController < Spree::BaseController
   def visit(taxon, allow_duplicates)
     # return [ [], {} ] if taxon.nil?
     table = {} 
-    taxon.children.each {|taxon| table[taxon] = visit(taxon, allow_duplicates) }
+    taxon.children.each {|t| table[t] = visit(t, allow_duplicates) }
     [ taxon.products.select {|p| allow_duplicates || p.taxons.first == taxon }, table ]
   end
 
