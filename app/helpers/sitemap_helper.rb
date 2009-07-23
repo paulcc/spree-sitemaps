@@ -1,9 +1,9 @@
 module SitemapHelper
 
-  def sub_xml(xml, taxon, tree)
+  def sub_xml(xml, taxon, tree)		# check no taxon link?
     tree.first.each do |p|
       xml.url {
-        xml.loc (@public_dir + p.permalink)                       # was seo_url(taxon, p)
+        xml.loc (@public_dir + '/' + p.permalink)                 # was seo_url(taxon, p)
         xml.lastmod p.updated_at.xmlschema			  #change timestamp of last modified
         xml.changefreq 'weekly'
         xml.priority '0.8'
@@ -18,7 +18,7 @@ module SitemapHelper
     xml.p { xml.b { xml.a taxon.name.upcase, :href => seo_url(taxon) }}
     xml.ul {
       tree.first.map do |p|
-        xml.li { xml.a p.name, :href => p.permalink }     # keep simple, was seo_url(taxon, p) }
+        xml.li { xml.a p.name, :href => '/' + p.permalink }     # keep simple, was seo_url(taxon, p)
       end
     }
     xml.ul {
