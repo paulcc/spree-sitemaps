@@ -18,7 +18,7 @@ module SitemapHelper
     xml.p { xml.b { xml.a taxon.name.upcase, :href => seo_url(taxon) }}
     xml.ul {
       tree.first.map do |p|
-        xml.li { xml.a p.name, :href => '/' + p.permalink }     # keep simple, was seo_url(taxon, p)
+        xml.li { xml.a p.name, :href => '/products/' + p.permalink }     # keep simple, was seo_url(taxon, p)
       end
     }
     xml.ul {
