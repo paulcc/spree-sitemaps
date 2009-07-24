@@ -3,6 +3,26 @@ SUMMARY
 
 This extension creates sitemaps in .html, .txt, and .xml (google sitemap) formats.
 
+
+Formats
+-------
+
+The XML format is explained here: http://www.sitemaps.org/protocol.php
+
+Note that we're using the sitemaplist format for the main file. Every taxon has generates a list of its own products, 
+so the main list is the list of all taxon sitemaps. 
+
+The HTML format is effectively the taxon tree, where each node shows the products associated with it. 
+
+In HTML and XML modes, a product is only listed (by default) for its first taxon, but you can get it to appear in 
+all of its taxons by setting @allow_duplicates to true.
+
+Yahoo text formats explained here: http://help.yahoo.com/l/us/yahoo/search/siteexplorer/manage/siteexplorer-45.html
+(do we need to change the filename?)
+
+You can also include a "Sitemap: /sitemap.xml" line in your robots.txt file; some crawlers accept this hint. 
+ 
+
 INSTALLATION
 ------------
 
