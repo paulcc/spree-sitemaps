@@ -3,7 +3,7 @@ module SitemapHelper
   def sub_xml(xml, taxon, tree)		# check no taxon link?
     tree.first.each do |p|
       xml.url {
-        xml.loc (@public_dir + '/' + p.permalink)                 # was seo_url(taxon, p)
+        xml.loc (@public_dir + '/products/' + p.permalink)                 # was seo_url(taxon, p)
         xml.lastmod p.updated_at.xmlschema			  #change timestamp of last modified
         xml.changefreq 'weekly'
         xml.priority '0.8'
