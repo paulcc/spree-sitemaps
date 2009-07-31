@@ -3,7 +3,6 @@
 <br />
 <%= returning '' do |output|
       xml = Builder::XmlMarkup.new(:target => output, :indent => 2) 
-      puts "FFFFFFFFFFFFFFF #{@taxons.inspect}"
-      @taxons.each {|r| sub_html(xml, r) }
+      @root_taxons.each {|r| sub_html(xml, r) }
     end
 %>
