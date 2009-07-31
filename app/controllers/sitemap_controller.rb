@@ -1,7 +1,7 @@
 class SitemapController < Spree::BaseController
   def index
     config
-    @taxons = Taxonomy.all.map &:root
+    @root_taxons = Taxonomy.all.map &:root
     respond_to do |format|
       format.html { }
       format.xml  { render :layout => false, :template => 'sitemap/index.xml.erb' }
@@ -9,6 +9,7 @@ class SitemapController < Spree::BaseController
     end
   end
 
+  # showing the sitemap of a specific taxon, to cut down on sitemap size
   def show
     config
     @taxon = Taxon.find_by_permalink(params[:id].join("/") + "/")
@@ -24,10 +25,23 @@ class SitemapController < Spree::BaseController
     end
   end
 
+  def home
+    config
+    respond_to do |format|
+      format.xml  { render :layout => false, :template => 'sitemap/home.xml.erb' }
+    end
+  end
+
   private
   def config
-    @public_dir = url_for( :controller => '/' ).sub(%r|/\s*$|, '')
+    # not using :site_url because localhost etc is more useful in dev mode
+    @public_dir = url_for( :controller => '/' ).sub(%r|/\s*$|, '') 
+
+    # only show a product once in the whole sitemap
     @allow_duplicates = false # TODO: config setting
+
+    # default to this to avoid penalties for lack of changes
+    @change_freq = 'monthly' 
   end
 
 

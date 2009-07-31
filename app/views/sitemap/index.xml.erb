@@ -2,8 +2,12 @@
       xml = Builder::XmlMarkup.new(:target => output, :indent => 2)
       xml.instruct!  :xml, :version => "1.0", :encoding => "UTF-8"
       xml.sitemapindex( :xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" ) {
-	@taxons.each do |taxon| 
-          add_taxon_descendants xml, taxon
+        xml.sitemap {
+          xml.loc (@public_dir + '/sitemap/home.xml')
+        }
+        taxon_order = Hash[*@root_taxons.map {|t| get_taxon_descendants t}.flatten]
+	taxon_order.keys.sort {|x,y| taxon_order[y] <=> taxon_order[x]}.each do |taxon| 
+          add_sub_map xml, taxon
         end
       }
     end
