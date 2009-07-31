@@ -1,9 +1,10 @@
 module SitemapHelper
 
   def add_taxon_products xml, taxon
-    products_to_list = listable_products(taxon)
+    products_to_list = listable_product_ids(taxon)
     products_to_list.each do |p|
       xml.url {
+        p = Product.find(p)
         xml.loc (@public_dir + product_path(p))
         xml.lastmod p.updated_at.xmlschema                        #change timestamp of last modified
         xml.changefreq @change_freq
@@ -13,7 +14,7 @@ module SitemapHelper
   end
 
   # access the count or the actual products to be listed
-  def listable_products(taxon, select = "*")
+  def listable_product_ids(taxon, select = "DISTINCT id")
     opts = {:select => select}
     unless @allow_duplicates
       # only list where taxon is the first listed one for the product
@@ -33,7 +34,7 @@ module SitemapHelper
   # returns tree of descendents with their listable count
   def get_taxon_descendants taxon
     taxon.children.map do |k|
-      count = listable_products(k, "count(*) as count").first.count.to_i 
+      count = listable_product_ids(k, "count(*) as count").first.count.to_i 
       all_info = get_taxon_descendants(k) 
       all_info += [k, count] if count != 0
       all_info
