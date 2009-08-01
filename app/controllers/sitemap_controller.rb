@@ -15,7 +15,7 @@ class SitemapController < Spree::BaseController
     @taxon = Taxon.find_by_permalink(params[:id].join("/") + "/")
     
     if @taxon.nil? 
-      render :nothing => true, :status => "404 Not Found" }
+      render :nothing => true, :status => "404 Not Found" 
     end 
 
     respond_to do |format|
