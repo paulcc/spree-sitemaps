@@ -45,7 +45,7 @@ module SitemapHelper
   def sub_html(xml, taxon)
     xml.p { xml.b { xml.a taxon.name.upcase, :href => seo_url(taxon) }}
     xml.ul {
-      listable_products_ids(taxon).map do |p|
+      listable_product_ids(taxon).map do |p|
         p = Product.find(p)
         xml.li { xml.a p.name, :href => product_path(p) }	# use basic form
       end
