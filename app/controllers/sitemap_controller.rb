@@ -15,7 +15,7 @@ class SitemapController < Spree::BaseController
     @taxon = Taxon.find_by_permalink(params[:id].join("/") + "/")
     
     if @taxon.nil? 
-      redirect_to sitemap_path and return
+      render :nothing => true, :status => "404 Not Found" }
     end 
 
     respond_to do |format|
