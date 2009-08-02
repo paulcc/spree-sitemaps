@@ -21,6 +21,19 @@ Yahoo text formats explained here: http://help.yahoo.com/l/us/yahoo/search/sitee
 (do we need to change the filename?)
 
 You can also include a "Sitemap: /sitemap.xml" line in your robots.txt file; some crawlers accept this hint. 
+
+
+
+Submitting sitemaps
+-------------------
+
+There's several ways to inform site engines of (revisions to) your sitemap. 
+
+See http://sitemaps.org/protocol.php#informing for info on how to do this via robots.txt and other methods.
+
+Also useful is periodic resubmission via cron/wget/curl etc to a particular url on a search engine, eg
+see http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=34609
+
  
 
 INSTALLATION
